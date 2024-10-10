@@ -2,5 +2,5 @@
 ModelNet10*/  
 __pycache__/*
 .vscode/*
-best_*
+./best_*
 checkpoint.pt
