@@ -1,1 +1,6 @@
-ModelNet10*/
+# Ignore dataset and converted dataset
+ModelNet10*/  
+__pycache__/*
+.vscode/*
+best_*
+checkpoint.pt
