@@ -4,6 +4,17 @@ from scipy.ndimage import affine_transform
 
 
 def compute_pitch(mesh, object_size=24, pitch_rescale=1.0):
+    """
+    Compute the pitch (voxel size) required to fit the 3D mesh within the desired voxel grid.
+
+    Parameters:
+    - mesh: The 3D mesh object.
+    - object_size: The target size for the object in the voxel grid (default is 24).
+    - pitch_rescale: Scaling factor for adjusting the pitch (default is 1.0).
+
+    Returns:
+    - pitch: The computed pitch value that defines the voxel size.
+    """
     bbox = mesh.bounding_box_oriented
     bbox_extents = bbox.extents
     max_pitch_x = bbox_extents[0] / object_size
@@ -15,16 +26,46 @@ def compute_pitch(mesh, object_size=24, pitch_rescale=1.0):
 
 
 def mesh_to_voxel_grid(mesh, object_size=24, pitch_rescale=1.0):
+    """
+    Convert a 3D mesh into a voxel grid based on the computed pitch.
+
+    Parameters:
+    - mesh: The 3D mesh object.
+    - object_size: The target size for the object in the voxel grid (default is 24).
+    - pitch_rescale: Scaling factor for adjusting the pitch (default is 1.0).
+
+    Returns:
+    - voxel_mat: A binary voxel grid representation of the mesh.
+    """
     pitch = compute_pitch(mesh, object_size=object_size, pitch_rescale=pitch_rescale)
     voxel_mat = mesh.voxelized(pitch).matrix.astype(int)
     return voxel_mat
 
 
 def to_tensor(voxel_grid):
+    """
+    Convert a voxel grid into a PyTorch tensor.
+
+    Parameters:
+    - voxel_grid: A binary voxel grid.
+
+    Returns:
+    - A PyTorch tensor of the voxel grid in float32 format.
+    """
     return torch.tensor(voxel_grid, dtype=torch.float32)
 
 
 def pad_voxel_grid(voxel_grid, grid_size=32):
+    """
+    Pad the voxel grid to a given grid size by adding zero-padding.
+
+    Parameters:
+    - voxel_grid: A tensor representing the voxel grid.
+    - grid_size: The target grid size to pad the voxel grid (default is 32).
+
+    Returns:
+    - padded_voxel_grid: A zero-padded voxel grid of size `grid_size x grid_size x grid_size`.
+    """
     # Calculate padding values
     pad_x = (grid_size - voxel_grid.shape[0]) // 2
     pad_y = (grid_size - voxel_grid.shape[1]) // 2
@@ -46,6 +87,16 @@ def pad_voxel_grid(voxel_grid, grid_size=32):
 
 
 def rotate_voxel_grid(voxel_grid, angle):
+    """
+    Rotate a voxel grid around the z-axis by a given angle.
+
+    Parameters:
+    - voxel_grid: A PyTorch tensor representing the voxel grid.
+    - angle: The angle in radians by which to rotate the grid.
+
+    Returns:
+    - rotated_grid: The rotated voxel grid as a tensor.
+    """
     if angle == 0:
         return voxel_grid
 
@@ -73,4 +124,13 @@ def rotate_voxel_grid(voxel_grid, angle):
 
 
 def normalize_voxel_grid(voxel_grid):
+    """
+    Normalize the voxel grid values to the range [-1, 1].
+
+    Parameters:
+    - voxel_grid: A binary voxel grid tensor with values 0 and 1.
+
+    Returns:
+    - A normalized voxel grid with values between -1 and 1.
+    """
     return 2 * voxel_grid - 1
