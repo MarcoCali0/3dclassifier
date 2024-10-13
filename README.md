@@ -68,6 +68,9 @@ For questions or issues, feel free to contact me:
 - GitHub: [@MarcoCali0](https://github.com/MarcoCali0)
 
 ## Acknowledgments
+This project was developed as an assignment for the course Neural Networks and Deep Learning at the University of Padua, held by Prof. Pegoraro in the academic year 2023/2024.
+
+
 Special thanks to [ModelNet Dataset creators](http://3dvision.princeton.edu/projects/2014/3DShapeNets/) for the dataset. 
 
 ## License
