@@ -1,5 +1,6 @@
 import glob
 import os
+
 import numpy as np
 import torch
 from torch.utils.data import Dataset
@@ -10,19 +11,40 @@ class ModelNetDatasetVoxel(Dataset):
     def __init__(self, data_dir, train=True):
         self.data_dir = data_dir
         self.train = train
-        self.class_map = {}
+
+        # Explicit class map to ensure correct label mapping
+        self.class_map = {
+            0: "chair",
+            1: "sofa",
+            2: "toilet",
+            3: "night_stand",
+            4: "bathtub",
+            5: "dresser",
+            6: "bed",
+            7: "desk",
+            8: "monitor",
+            9: "table",
+        }
+
+        # Now we reverse the mapping to map folder names to their correct labels
+        self.folder_to_label = {v: k for k, v in self.class_map.items()}
+
         self.files, self.labels = self.load_files_and_labels()
 
     def load_files_and_labels(self):
         folders = glob.glob(os.path.join(self.data_dir, "*"))
         files = []
         labels = []
-        for i, folder in enumerate(folders):
-            self.class_map[i] = os.path.basename(folder)
-            dataset_type = "train" if self.train else "test"
-            class_files = glob.glob(os.path.join(folder, f"{dataset_type}/*.pt"))
-            files.extend(class_files)
-            labels.extend([i] * len(class_files))
+        for folder in folders:
+            folder_name = os.path.basename(folder)
+            label = self.folder_to_label.get(
+                folder_name
+            )  # Use the explicit mapping here
+            if label is not None:
+                dataset_type = "train" if self.train else "test"
+                class_files = glob.glob(os.path.join(folder, f"{dataset_type}/*.pt"))
+                files.extend(class_files)
+                labels.extend([label] * len(class_files))
         return files, labels
 
     def __len__(self):
@@ -101,7 +123,7 @@ def train_and_evaluate(
         train_losses = []
         correct = 0
         total = 0
-        
+
         for batch_x, batch_y in tqdm(train_dataloader, leave=True):
             opt.zero_grad()
 
@@ -126,7 +148,9 @@ def train_and_evaluate(
         train_acc_log.append(train_acc)
 
         avg_train_loss = np.mean(train_losses)
-        print(f"Average training loss: {avg_train_loss:.3f}\t Training accuracy: {train_acc:.3f}")
+        print(
+            f"Average training loss: {avg_train_loss:.3f}\t Training accuracy: {train_acc:.3f}"
+        )
         train_loss_log.append(avg_train_loss)
 
         ### VALIDATION
