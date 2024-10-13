@@ -56,3 +56,24 @@ The model is evaluated using standard metrics such as accuracy, precision, recal
 With only 333k parameters, this model achieves an accuracy score of 0.905, and a top-2 accuracy of 0.968.
 ![ConfusionMatrix](figures/confusion_matrix.png).
 
+## Contributors
+
+- [Marco Calì](https://github.com/MarcoCali0)
+
+## Contact
+
+For questions or issues, feel free to contact me:
+
+- Email: marcocali@protonmail.com
+- GitHub: [@MarcoCali0](https://github.com/MarcoCali0)
+
+## Acknowledgments
+Special thanks to [ModelNet Dataset creators](http://3dvision.princeton.edu/projects/2014/3DShapeNets/) for the dataset. 
+
+## License
+This project is licensed under the MIT License.
+
+
+Thanks for checking out this project!  
+*Marco Calì*
+
