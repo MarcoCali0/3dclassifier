@@ -8,13 +8,12 @@ import numpy as np
 import torch
 import trimesh
 from tqdm import tqdm
-
 from transforms import *
 
 grid_size = 32
 object_size = 28
-pitch_rescale = 1.0
-no_of_rotations = 12
+pitch_rescale = 1
+no_of_rotations = 4
 
 DATA_DIR = "ModelNet10"
 SAVE_DIR = (
@@ -79,7 +78,7 @@ def process_file(file_path, dataset_type, class_name, dataset_save_dir):
             for angle in np.linspace(
                 0, 2 * np.pi * (1 - 1 / no_of_rotations), no_of_rotations
             ):
-                rotated_voxel_grid = rotate_voxel_grid_v2(voxel_grid, angle)
+                rotated_voxel_grid = rotate_voxel_grid(voxel_grid, angle)
                 rotated_voxel_grid = normalize_voxel_grid(rotated_voxel_grid)
                 torch.save(
                     rotated_voxel_grid,

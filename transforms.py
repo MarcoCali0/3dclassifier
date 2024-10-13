@@ -16,7 +16,7 @@ def compute_pitch(mesh, object_size=24, pitch_rescale=1.0):
 
 def mesh_to_voxel_grid(mesh, object_size=24, pitch_rescale=1.0):
     pitch = compute_pitch(mesh, object_size=object_size, pitch_rescale=pitch_rescale)
-    voxel_mat = mesh.voxelized(pitch).hollow().matrix.astype(int)
+    voxel_mat = mesh.voxelized(pitch).matrix.astype(int)
     return voxel_mat
 
 
@@ -45,7 +45,7 @@ def pad_voxel_grid(voxel_grid, grid_size=32):
     return padded_voxel_grid
 
 
-def rotate_voxel_grid_v2(voxel_grid, angle):
+def rotate_voxel_grid(voxel_grid, angle):
     if angle == 0:
         return voxel_grid
 
@@ -70,40 +70,6 @@ def rotate_voxel_grid_v2(voxel_grid, angle):
     )
 
     return torch.tensor(rotated_grid, dtype=voxel_grid.dtype, device=voxel_grid.device)
-
-
-def rotate_voxel_grid(voxel_grid, angle):
-    if angle == 0:
-        return voxel_grid
-
-    rotation_matrix = torch.tensor(
-        [
-            [np.cos(angle), -np.sin(angle), 0],
-            [np.sin(angle), np.cos(angle), 0],
-            [0, 0, 1],
-        ],
-        dtype=torch.float32,
-    )
-
-    center = torch.tensor(voxel_grid.shape, dtype=torch.float32) // 2
-    rotated_grid = torch.zeros_like(voxel_grid)
-
-    for x in range(voxel_grid.shape[0]):
-        for y in range(voxel_grid.shape[1]):
-            for z in range(voxel_grid.shape[2]):
-                if voxel_grid[x, y, z]:
-                    coord = torch.tensor([x, y, z], dtype=torch.float32) - center
-                    new_coord = torch.round(
-                        torch.matmul(rotation_matrix, coord) + center
-                    ).long()
-                    if (
-                        0 <= new_coord[0] < voxel_grid.shape[0]
-                        and 0 <= new_coord[1] < voxel_grid.shape[1]
-                        and 0 <= new_coord[2] < voxel_grid.shape[2]
-                    ):
-                        rotated_grid[tuple(new_coord)] = 1
-
-    return rotated_grid
 
 
 def normalize_voxel_grid(voxel_grid):

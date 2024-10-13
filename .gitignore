@@ -1,6 +1,5 @@
 # Ignore dataset and converted dataset
-ModelNet10*/  
+ModelNet10*/
 __pycache__/*
 .vscode/*
-./best_*
 checkpoint.pt
