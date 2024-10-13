@@ -58,7 +58,7 @@ These can be changed by passing them as arguments to `train.py`.
 ## Results and Evaluation
 The model is evaluated using standard metrics such as accuracy, precision, recall, and F1-score. Additionally, confusion matrices are generated to provide insight into which classes are most frequently misclassified.
 
-With only 333k parameters, this model achieves an accuracy score of 0.905, and a top-2 accuracy of 0.968.
+With only 333k parameters, this model achieves an accuracy score of 90.7%, and a top-2 accuracy of 9.66%.
 ![ConfusionMatrix](figures/confusion_matrix.png).
 
 ![Predictions](figures/predictions.png).
