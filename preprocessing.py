@@ -11,14 +11,15 @@ from tqdm import tqdm
 
 from transforms import *
 
-DATA_DIR = "ModelNet10"
-SAVE_DIR = "ModelNet10Voxel"
-
 grid_size = 32
-object_size = 24
+object_size = 28
 pitch_rescale = 1.0
-no_of_rotations = 1
+no_of_rotations = 12
 
+DATA_DIR = "ModelNet10"
+SAVE_DIR = (
+    f"ModelNet10Voxel_{grid_size}_{object_size}_{pitch_rescale}_{no_of_rotations}"
+)
 
 parser = argparse.ArgumentParser(
     description="Transform the ModelNet10 dataset from meshes to voxel grids."
@@ -39,7 +40,7 @@ parser.add_argument(
     "--no_of_rotations",
     type=int,
     help="Add rotated versions to the training set",
-    default=1,
+    default=no_of_rotations,
 )
 
 args = parser.parse_args()
@@ -86,7 +87,7 @@ def process_file(file_path, dataset_type, class_name, dataset_save_dir):
                         dataset_save_dir,
                         (
                             os.path.basename(os.path.splitext(file_path)[0])
-                            + (".pt" if angle == 0 else f"rot{int(angle*180/np.pi)}.pt")
+                            + (".pt" if angle == 0 else f"rot{round(angle*180/np.pi)}.pt")
                         ),
                     ),
                 )
@@ -136,7 +137,5 @@ if not os.path.isdir(SAVE_DIR):
                         desc=f"Processing {dataset_type} data for {class_name}",
                     )
                 )
-
 else:
     print("Converted dataset was found")
-
