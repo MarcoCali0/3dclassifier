@@ -28,10 +28,10 @@ Run the `preprocessing.py` script to convert the `.off` models to voxel grids. T
 
 ### Customization
 By default, the script above will be run with the following parameters:
-- grid_size = 32
-- object_size = 28
-- pitch_rescale = 1
-- no_of_rotations = 4
+- `grid_size = 32`
+- `object_size = 28`
+- `pitch_rescale = 1`
+- `no_of_rotations = 4`
 
 but the user is free to experiment with other resolutions and a different number of rotated copies.
 
@@ -42,7 +42,7 @@ The Simple3DCNN is a 3D convolutional neural network designed to classify 3D vox
 - Fully Connected Layers: After flattening the feature maps, a 64-unit fully connected layer is applied, followed by dropout (p=0.2) to prevent overfitting. The final layer outputs class predictions for the 10 categories.
 
 ### Training
-For training the model, run the `main.py` script. Here you can set `resume_training` to `True` in case you need to train in different time windows.
+For training the model, run the `train.py` script. Here you can set `resume_training` to `True` in case you need to train in different time windows.
 
 ### Optimization
 The model is trained using Adam optimizer, which is known for its efficiency in training deep neural networks. The loss function used is cross-entropy loss, commonly used for classification tasks.
@@ -53,6 +53,8 @@ The model is trained using Adam optimizer, which is known for its efficiency in 
 - Epochs: 50 (with early stopping).
 - Early Stopping: If the validation loss does not improve for 5 consecutive epochs, training is halted to prevent overfitting and save resources.
 
+These can be changed by passing them as arguments to `train.py`. 
+
 ## Results and Evaluation
 The model is evaluated using standard metrics such as accuracy, precision, recall, and F1-score. Additionally, confusion matrices are generated to provide insight into which classes are most frequently misclassified.
 
@@ -60,6 +62,8 @@ With only 333k parameters, this model achieves an accuracy score of 0.905, and a
 ![ConfusionMatrix](figures/confusion_matrix.png).
 
 ![Predictions](figures/predictions.png).
+
+The user can run `evaluate.py` for testing the model in the repo, or any other model obtained by a separate training.
 
 ## Contributors
 

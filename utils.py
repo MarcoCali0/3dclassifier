@@ -95,7 +95,7 @@ def train_and_evaluate(
             print(f"Early stopping at {epoch_num} epochs!")
             break
 
-        print(f"##### EPOCH {epoch_num} #####")
+        print(f"##### EPOCH {epoch_num+1}/{num_epochs} #####")
         ### TRAIN
         model.train()  # Set the model to training mode
         train_losses = []
