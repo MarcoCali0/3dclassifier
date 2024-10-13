@@ -41,6 +41,9 @@ The Simple3DCNN is a 3D convolutional neural network designed to classify 3D vox
 - Conv3D Layers: Three convolutional layers progressively extract spatial features using 16, 32, and 64 filters with 3x3x3 kernels. Each layer is followed by ReLU activation and 2x2x2 max pooling to reduce spatial dimensions.
 - Fully Connected Layers: After flattening the feature maps, a 64-unit fully connected layer is applied, followed by dropout (p=0.2) to prevent overfitting. The final layer outputs class predictions for the 10 categories.
 
+### Training
+For training the model, run the `main.py` script. Here you can set `resume_training` to `True` in case you need to train in different time windows.
+
 ### Optimization
 The model is trained using Adam optimizer, which is known for its efficiency in training deep neural networks. The loss function used is cross-entropy loss, commonly used for classification tasks.
 
@@ -55,6 +58,8 @@ The model is evaluated using standard metrics such as accuracy, precision, recal
 
 With only 333k parameters, this model achieves an accuracy score of 0.905, and a top-2 accuracy of 0.968.
 ![ConfusionMatrix](figures/confusion_matrix.png).
+
+![Predictions](figures/predictions.png).
 
 ## Contributors
 

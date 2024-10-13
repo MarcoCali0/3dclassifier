@@ -1,8 +1,39 @@
+import glob
 import os
-
 import numpy as np
 import torch
+from torch.utils.data import Dataset
 from tqdm import tqdm
+
+
+class ModelNetDatasetVoxel(Dataset):
+    def __init__(self, data_dir, train=True):
+        self.data_dir = data_dir
+        self.train = train
+        self.class_map = {}
+        self.files, self.labels = self.load_files_and_labels()
+
+    def load_files_and_labels(self):
+        folders = glob.glob(os.path.join(self.data_dir, "*"))
+        files = []
+        labels = []
+        for i, folder in enumerate(folders):
+            self.class_map[i] = os.path.basename(folder)
+            dataset_type = "train" if self.train else "test"
+            class_files = glob.glob(os.path.join(folder, f"{dataset_type}/*.pt"))
+            files.extend(class_files)
+            labels.extend([i] * len(class_files))
+        return files, labels
+
+    def __len__(self):
+        return len(self.files)
+
+    def __getitem__(self, idx):
+        file_path = self.files[idx]
+        voxel_grid = torch.load(file_path)
+        label = torch.tensor(self.labels[idx], dtype=torch.long)
+        return voxel_grid, label
+
 
 def train_and_evaluate(
     model,
@@ -36,14 +67,13 @@ def train_and_evaluate(
     - val_loss_log (list of float): List of average validation losses for each epoch.
     - train_acc_log (list of float): List of training accuracies for each epoch.
     - val_acc_log (list of float): List of validation accuracies for each epoch.
-
     """
     # Initialize logs and variables
     train_loss_log = []
     val_loss_log = []
     train_acc_log = []
     val_acc_log = []
-    
+
     best_val = np.inf
     patience_epoch_count = 0
     start_epoch = 0
@@ -65,13 +95,14 @@ def train_and_evaluate(
             print(f"Early stopping at {epoch_num} epochs!")
             break
 
+        print(f"##### EPOCH {epoch_num} #####")
         ### TRAIN
         model.train()  # Set the model to training mode
         train_losses = []
         correct = 0
         total = 0
-        iterator = tqdm(train_dataloader)
-        for batch_x, batch_y in iterator:
+        
+        for batch_x, batch_y in tqdm(train_dataloader, leave=True):
             opt.zero_grad()
 
             # Move data to device
@@ -85,16 +116,15 @@ def train_and_evaluate(
             # Backpropagation and optimization
             loss.backward()
             opt.step()
-            
+
             _, predicted = torch.max(out, 1)
             total += batch_y.size(0)
             correct += (predicted == batch_y).sum().item()
             train_losses.append(loss.item())
-            iterator.set_description(f"# EPOCH {epoch_num}: Train loss: {round(loss.item(), 2)} \t")
 
         train_acc = correct / total
         train_acc_log.append(train_acc)
-        
+
         avg_train_loss = np.mean(train_losses)
         print(f"Average training loss: {avg_train_loss:.3f}\t Training accuracy: {train_acc:.3f}")
         train_loss_log.append(avg_train_loss)
@@ -121,7 +151,7 @@ def train_and_evaluate(
         avg_val_loss = np.mean(val_losses)
         val_loss_log.append(avg_val_loss)
         val_acc = correct / total
-        
+
         val_acc_log.append(val_acc)
 
         print(
@@ -143,7 +173,7 @@ def train_and_evaluate(
 
         # Save the best model
         if avg_val_loss < best_val:
-            print("Update model!!!")
+            print("Saving model...")
             torch.save(
                 model.state_dict(),
                 f"best_{model.__class__.__name__}_val_loss_{round(avg_val_loss, 3)}_val_acc_{round(val_acc, 3)}.pt",
