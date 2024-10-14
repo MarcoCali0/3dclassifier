@@ -33,7 +33,9 @@ By default, the script above will be run with the following parameters:
 - `pitch_rescale = 1`
 - `no_of_rotations = 4`
 
-but the user is free to experiment with other resolutions and a different number of rotated copies. The training and validation datasets have a quite unbalanced class distribution
+but the user is free to experiment with other resolutions and a different number of rotated copies. 
+
+The training and validation datasets have quite an unbalanced class distribution
 ![Distributions](figures/class_distribution.png)
 
 ## Approach
