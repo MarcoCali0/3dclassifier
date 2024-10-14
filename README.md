@@ -33,7 +33,8 @@ By default, the script above will be run with the following parameters:
 - `pitch_rescale = 1`
 - `no_of_rotations = 4`
 
-but the user is free to experiment with other resolutions and a different number of rotated copies.
+but the user is free to experiment with other resolutions and a different number of rotated copies. The training and validation datasets have a quite unbalanced class distribution
+![Distributions](figures/class_distribution.png)
 
 ## Approach
 The Simple3DCNN is a 3D convolutional neural network designed to classify 3D voxel grids into 10 categories.
@@ -58,7 +59,7 @@ These can be changed by passing them as arguments to `train.py`.
 ## Results and Evaluation
 The model is evaluated using standard metrics such as accuracy, precision, recall, and F1-score. Additionally, confusion matrices are generated to provide insight into which classes are most frequently misclassified.
 
-With only 333k parameters, this model achieves an accuracy score of 90.7%, and a top-2 accuracy of 9.66%.
+With only 333k parameters, this model achieves an accuracy score of 90.7%, and a top-2 accuracy of 96.6%.
 ![ConfusionMatrix](figures/confusion_matrix.png).
 
 ![Predictions](figures/predictions.png).
