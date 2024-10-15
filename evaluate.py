@@ -83,10 +83,10 @@ sorted_class_names = [class_names[i] for i in sorted_indices]
 sorted_cm = cm[sorted_indices][:, sorted_indices]
 
 # Plot confusion matrix
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(6, 6))
 plt.imshow(sorted_cm, interpolation="nearest", cmap=plt.cm.Blues)
 plt.title("Confusion Matrix")
-plt.colorbar()
+# plt.colorbar()
 tick_marks = np.arange(len(sorted_class_names))
 plt.xticks(tick_marks, sorted_class_names, rotation=45)
 plt.yticks(tick_marks, sorted_class_names)
