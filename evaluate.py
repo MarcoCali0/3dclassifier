@@ -1,4 +1,5 @@
 import os
+import time
 import random
 import itertools
 import numpy as np
@@ -34,6 +35,7 @@ all_predictions = []
 all_targets = []
 top2_correct = 0  # Counter for top-2 accuracy
 
+start = time.time()
 iterator = tqdm(test_dataloader)
 for inputs, targets in iterator:
     # Move data to device
@@ -58,6 +60,11 @@ for inputs, targets in iterator:
     # Append to lists
     all_predictions.extend(predicted.cpu().numpy())
     all_targets.extend(targets.cpu().numpy())
+
+
+end = time.time()
+
+print(f"Whole test dataset inferred in {(end-start):.1f} s")
 
 # Calculate overall accuracy (Top-1 Accuracy)
 overall_accuracy = accuracy_score(all_targets, all_predictions)
@@ -113,10 +120,10 @@ plt.savefig("figures/confusion_matrix.png")
 ### 
 
 # Choose random samples
-num_samples = 6  # Number of random samples to predict
+num_samples = 4  # Number of random samples to predict
 random_indices = random.sample(range(len(test_dataset)), num_samples)
 
-fig = plt.figure(figsize=(6, 10))
+fig = plt.figure(figsize=(6, 7))
 
 for i, idx in enumerate(random_indices):
     # Get a random sample from the test set
@@ -133,7 +140,7 @@ for i, idx in enumerate(random_indices):
     true_label = target.item()  # Assuming target is a scalar label
 
     sample_np = sample.cpu().squeeze().numpy()
-    ax = fig.add_subplot(3, 2, i+1, projection="3d")
+    ax = fig.add_subplot(2, 2, i+1, projection="3d")
     
     # Voxel plot
     sample_np = (sample_np + 1) / 2
